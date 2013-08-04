@@ -1,0 +1,12 @@
+#ifndef SPPBROWSER_GLOBAL_H
+#define SPPBROWSER_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(SPPBROWSER_LIBRARY)
+#  define SPPBROWSERSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define SPPBROWSERSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // SPPBROWSER_GLOBAL_H
