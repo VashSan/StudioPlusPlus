@@ -19,6 +19,9 @@ HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
 
+QMAKE_CFLAGS_RELEASE    = -zi
+
+QMAKE_LFLAGS_RELEASE    = /DEBUG
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../sppbrowser/release/ -lsppbrowser
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../sppbrowser/debug/ -lsppbrowser

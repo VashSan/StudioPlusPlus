@@ -21,6 +21,10 @@ HEADERS += sppbrowser.h\
     data.h \
     solutionscanner.h
 
+QMAKE_CFLAGS_RELEASE    = -zi
+
+QMAKE_LFLAGS_RELEASE    = /DEBUG
+
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib

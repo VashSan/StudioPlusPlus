@@ -85,6 +85,8 @@ void SolutionBrowser::updateTree(QList<ProjectPtr> *results)
 
 void SolutionBrowser::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
+	Q_UNUSED(column);
+
 	QVariant data = item->data(0, Qt::ToolTipRole);
 	QString file = data.toString();
 	itemDoubleClicked(file);
