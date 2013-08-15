@@ -21,7 +21,8 @@ private:
 	QList<ProjectPtr> _projectList;
 	mutable QMutex _mutex;
 
-	void scanSolution(const QString& parameter);
+	/// Returns true if the solution file was scanned successfully.
+	bool scanSolution(const QString& parameter);
 
 	ProjectPtr parseProjectDeclaration(const QString& line);
 

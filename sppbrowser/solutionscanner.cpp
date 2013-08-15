@@ -2,7 +2,6 @@
 
 #include <QtXml>
 #include <QFile>
-#include <stdexcept>
 #include "data.h"
 
 void SolutionScanner::doWork(const QString &solutionFile)
@@ -15,7 +14,11 @@ void SolutionScanner::doWork(const QString &solutionFile)
 	_solutionFile = fileInfo.fileName();
 	_projectList.clear();
 
-	scanSolution(solutionFile);
+	if (!scanSolution(solutionFile))
+	{
+		// TODO: make clear we had an error somehow
+		return;
+	}
 
 	const int projectCount = _projectList.length();
 	for (int i = 0; i < projectCount; i++)
@@ -23,20 +26,21 @@ void SolutionScanner::doWork(const QString &solutionFile)
 		ProjectPtr project = _projectList.at(i);
 		readProject(project);
 
-		const int relativeProgress = (int)((i+1) /  projectCount);
-		emit progress(2, relativeProgress * 100);
+		const int relativeProgress = (int)((i+1) * 100 /  projectCount);
+		emit progress(2, relativeProgress);
 	}
 
 	emit resultReady(&_projectList);
 }
 
-void SolutionScanner::scanSolution(const QString& solutionFile)
+bool SolutionScanner::scanSolution(const QString& solutionFile)
 {
+	qDebug() << "Reading solution:" << solutionFile;
+
 	QFile file(solutionFile);
 	if( !file.open(QFile::ReadOnly | QFile::Text))
 	{
-		// TODO emit error signal instead
-		throw std::runtime_error("Solution file could not be opened");
+		return false;
 	}
 
 	const qint64 fileSize = file.size(); // estimate scan progress
@@ -52,9 +56,11 @@ void SolutionScanner::scanSolution(const QString& solutionFile)
 			_projectList.append(p);
 		}
 
-		const qint64 relativePosition = (qint64)(file.pos() / fileSize);
-		emit progress(1, relativePosition * 100);
+		const qint64 relativePosition = (qint64)(file.pos() * 100 / fileSize);
+		emit progress(1, relativePosition);
 	}
+
+	return true;
 }
 
 ProjectPtr SolutionScanner::parseProjectDeclaration(const QString& line)
@@ -82,6 +88,9 @@ ProjectPtr SolutionScanner::parseProjectDeclaration(const QString& line)
 
 void SolutionScanner::readProject(ProjectPtr project)
 {
+	qDebug() << "Reading project:" << project->name
+			 << "in file:" << project->file;
+
 	QDomDocument dom;
 
 	QDir dir(_solutionPath);
@@ -91,8 +100,8 @@ void SolutionScanner::readProject(ProjectPtr project)
 	QFile file(projectFilePath);
 	if (!file.open(QFile::ReadOnly))
 	{
-		// TODO emit error signal instead
-		throw std::runtime_error("Project file could not be opened");
+		// TODO somehow mark the project as erroneous
+		return;
 	}
 
 	dom.setContent(&file);

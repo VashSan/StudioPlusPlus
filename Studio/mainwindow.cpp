@@ -11,8 +11,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	//QString fileName = "C:\\Users\\Alex\\Desktop\\plugindemo\\NppPluginTemplate.sln";
-
 	browser = new SolutionBrowser();
 	connect(browser, &SolutionBrowser::itemDoubleClicked, this, &MainWindow::on_itemDoubleClicked);
 
